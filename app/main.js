@@ -10,7 +10,7 @@ const server = net.createServer((socket) => {
         if(request.startsWith("Get / ")) {
             socket.write("HTTP/1.1 200 OK\r\n\r\n");
         }
-        socket.write("HTTP/1.1 404 NOT FOUND\r\n\r\n");
+        socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
     })
     socket.on("close", () => {
         socket.end();
