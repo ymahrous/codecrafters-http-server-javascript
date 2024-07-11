@@ -7,7 +7,7 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
         const request = data.toString();
-        if(request.startsWith("Get / ")) {
+        if(request.startsWith('Get / ')) {
             socket.write("HTTP/1.1 200 OK\r\n\r\n");
         }
         socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
@@ -18,3 +18,6 @@ const server = net.createServer((socket) => {
 });
 
 server.listen(4221, "localhost");
+server.listen(4221, "localhost", () => {
+    process.stdout.write("Listening on localhost:4221");
+});
