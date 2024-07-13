@@ -15,6 +15,14 @@ const server = net.createServer((socket) => {
         } else if(url == '/user-agent') {
             const userAgent = headers[2].split('User-Agent: ')[1];
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`);
+        }  else if(url.includes("/files/")){
+            const fileName = url.split('/files/')[1];
+            fs.readFile(`/tmp/data/codecrafters.io/http-server-tester/${fileName}`, (err, data) => {
+                if(err) {
+                    socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
+                }
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${data.length}\r\n\r\n${data}`);
+            });
         } else {
             socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
         }
