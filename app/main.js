@@ -5,7 +5,11 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
         const request = data.toString();
-        const [method, path] = request.split(" ");
+        // const [method, path] = request.split(" ");
+        const lines = data.split('\r\n')
+        const parsedResquetLine = lines[0].split(' ')
+        const method = parsedResquetLine[0]
+
         const url = request.split(' ')[1];
         const headers = request.split('\r\n');
 
