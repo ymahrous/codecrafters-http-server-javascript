@@ -1,17 +1,17 @@
 const fs = require("fs");
 const net = require("net");
-console.log("Logs from your program will appear here!");
+console.log("Logs from the program will appear here..");
 
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
         const request = data.toString();
-        // const [method, path] = request.split(" ");
-        const lines = data.split('\r\n')
-        const parsedResquetLine = lines[0].split(' ')
-        const method = parsedResquetLine[0]
-
         const url = request.split(' ')[1];
         const headers = request.split('\r\n');
+        // const [method, path] = request.split(" ");
+        const lines = data.split('\r\n');
+        const parsedResquetLine = lines[0].split(' ');
+        const method = parsedResquetLine[0];
+        ////////////////////////////////////////////
 
         if(url == "/"){
             socket.write("HTTP/1.1 200 OK\r\n\r\n");
