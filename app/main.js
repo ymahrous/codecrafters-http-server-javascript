@@ -31,7 +31,7 @@ const server = net.createServer((socket) => {
             });
         } else if(url.includes("/files/") && method == 'POST') {
             const fileName = url.split('/files/')[1];
-            const filePath = process.argv[3] + fileName;
+            const filePath = __dirname + fileName;
             const file = fileName.toString("utf-8").split("\r\n\r\n")[1];
 
             fs.writeFileSync(filePath, file);
