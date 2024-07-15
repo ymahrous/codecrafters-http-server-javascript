@@ -2,6 +2,15 @@ const fs = require("fs");
 const net = require("net");
 console.log("Logs from the program will appear here..");
 
+const args = {};
+process.argv.forEach((arg, index) => {
+  if (arg.startsWith("--")) {
+    args[arg.replace(/^--/, "")] = process.argv[index + 1];
+  }
+});
+1;
+const FILES_DIR = args["directory"];
+
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
         const request = data.toString();
@@ -21,7 +30,7 @@ const server = net.createServer((socket) => {
         } else if(url == '/user-agent') {
             const userAgent = headers[2].split('User-Agent: ')[1];
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`);
-        }  else if(url.includes("/files/") && method == 'GET'){
+        }  else if(url.includes("/files/") && data.toString().split(" ")[0] === "GET"){
             const fileName = url.split('/files/')[1];
             fs.readFile(`/tmp/data/codecrafters.io/http-server-tester/${fileName}`, (err, data) => {
                 if(err) {
@@ -29,9 +38,9 @@ const server = net.createServer((socket) => {
                 }
                 socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${data.length}\r\n\r\n${data}`);
             });
-        } else if(url.includes("/files/") && method == 'POST') {
+        } else if(url.includes("/files/") && data.toString().split(" ")[0] === "POST") {
             const fileName = url.split('/files/')[1];
-            const filePath = __dirname + fileName;
+            const filePath = FILES_DIR + fileName;
             const file = fileName.toString("utf-8").split("\r\n\r\n")[1];
 
             fs.writeFileSync(filePath, file);
