@@ -31,7 +31,7 @@ console.log("Logs from the program will appear here..");
 
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
-        // const headers = request.split('\r\n');
+        const headersUA = request.split('\r\n');
         const request = data.toString().split("\r\n");
         const url = data.toString().split(' ')[1];
         const [method, path, protocol] = request[0].split(" ");
@@ -52,7 +52,7 @@ const server = net.createServer((socket) => {
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
 
         } else if(url == '/user-agent') {
-            const userAgent = headers[2].split('User-Agent: ')[1];
+            const userAgent = headersUA[2].split('User-Agent: ')[1];
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`);
 
         } else if (path.startsWith("/files/") && method === "GET") {
