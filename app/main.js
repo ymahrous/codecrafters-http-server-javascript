@@ -14,9 +14,9 @@ console.log("Logs from the program will appear here..");
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
         const request = data.toString().split("\r\n");
-        const url = request.split(' ')[1];
+        const url = data.toString().split(' ')[1];
         // const headers = request.split('\r\n');
-        const [method, path, protocol] = request.split(" ");
+        const [method, path, protocol] = request[0].split(" ");
         const headers = {};
         request.slice(1).forEach((header) => {
             const [key, value] = header.split(" ");
