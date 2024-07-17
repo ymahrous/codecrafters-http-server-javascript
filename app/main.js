@@ -10,21 +10,26 @@ console.log("Logs from the program will appear here..");
 // });
 // 1;
 // const FILES_DIR = args["directory"];
+const parseRequest = (requestData) => {
+    const request = data.toString().split("\r\n");
+    // const headers = request.split('\r\n');
+    const [method, path, protocol] = request[0].split(" ");
+    const headers = {};
+    request.slice(1).forEach((header) => {
+    const [key, value] = header.split(" ");
+        if (key && value) {
+            headers[key] = value;
+        }
+    });
+    return { method, path, protocol, headers };
+};
 
 const server = net.createServer((socket) => {
-    socket.on('data', (data) => {
-        const request = data.toString().split("\r\n");
+        socket.on('data', (data) => {
         const url = data.toString().split(' ')[1];
-        // const headers = request.split('\r\n');
-        const [method, path, protocol] = request[0].split(" ");
-        const headers = {};
-        request.slice(1).forEach((header) => {
-            const [key, value] = header.split(" ");
-            if (key && value) {
-            headers[key] = value;
-            }
-        });
         ////////////////////////////////////////////
+        const request = parseRequest(data);
+        const { method, path, protocol, headers } = request;
 
         if(url == "/"){
             socket.write("HTTP/1.1 200 OK\r\n\r\n");
@@ -47,7 +52,6 @@ const server = net.createServer((socket) => {
               );
             } else {
               socket.write('HTTP/1.1 404 Not Found\r\n\r\n');
-              1;
             }
           } else if (path.startsWith("/files/") && method === "POST") {
             const filename = process.argv[3] + "/" + path.substring(7);
