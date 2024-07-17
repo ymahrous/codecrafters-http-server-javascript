@@ -49,6 +49,10 @@ const server = net.createServer((socket) => {
 
         } else if(url.includes("/echo/")){
             const content = url.split('/echo/')[1];
+            if(headers["Accept-Encoding"] == "gzip") {
+                console.log(headers["Accept-Encoding"]);
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
+            }
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
 
         } else if(url == '/user-agent') {
