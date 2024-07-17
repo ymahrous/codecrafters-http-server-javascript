@@ -10,12 +10,30 @@ console.log("Logs from the program will appear here..");
 // });
 // 1;
 // const FILES_DIR = args["directory"];
+//          else if(url.includes("/files/")){
+//             const fileName = url.split('/files/')[1];
+//             fs.readFile(`/tmp/data/codecrafters.io/http-server-tester/${fileName}`, (err, data) => {
+//                 if(err) {
+//                     socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
+//                 }
+//                 socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${data.length}\r\n\r\n${data}`);
+//             });
+//          } else if(url.includes("/files/") && data.toString().split(" ")[0] === "POST") {
+//             let fileName = url.split('/')[2];
+//             console.log(`filename:${fileName}`);
+//             const filePath = FILES_DIR + fileName;
+//             const file = fileName.toString("utf-8").split("\r\n\r\n")[1];
+
+//             fs.writeFileSync(filePath, file);
+
+//             socket.write("HTTP/1.1 201 CREATED\r\n\r\n");
+//          } 
 
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
+        // const headers = request.split('\r\n');
         const request = data.toString().split("\r\n");
         const url = data.toString().split(' ')[1];
-        // const headers = request.split('\r\n');
         const [method, path, protocol] = request[0].split(" ");
         const headers = {};
         request.slice(1).forEach((header) => {
@@ -28,51 +46,36 @@ const server = net.createServer((socket) => {
 
         if(url == "/"){
             socket.write("HTTP/1.1 200 OK\r\n\r\n");
+
         } else if(url.includes("/echo/")){
             const content = url.split('/echo/')[1];
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
+
         } else if(url == '/user-agent') {
             const userAgent = headers[2].split('User-Agent: ')[1];
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`);
+
         } else if (path.startsWith("/files/") && method === "GET") {
             const fileName = path.replace("/files/", "").trim();
             const filePath = process.argv[3] + fileName;
             const isExist = fs.readdirSync(process.argv[3]).some((file) => {
-              return file === fileName;
+                return file === fileName;
             });
             if (isExist) {
-              const content = fs.readFileSync(filePath, "utf-8");
-              socket.write(
-                `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\n${content}`
-              );
+            const content = fs.readFileSync(filePath, "utf-8");
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\n${content}`);
             } else {
-              socket.write('HTTP/1.1 404 Not Found\r\n\r\n');
+            socket.write('HTTP/1.1 404 Not Found\r\n\r\n');
             }
-          } else if (path.startsWith("/files/") && method === "POST") {
+
+        } else if (path.startsWith("/files/") && method === "POST") {
             const filename = process.argv[3] + "/" + path.substring(7);
             const req = data.toString().split("\r\n");
             const body = req[req.length - 1];
             fs.writeFileSync(filename, body);
             socket.write(`HTTP/1.1 201 Created\r\n\r\n`);
-          }
-        // else if(url.includes("/files/")){
-        //     const fileName = url.split('/files/')[1];
-        //     fs.readFile(`/tmp/data/codecrafters.io/http-server-tester/${fileName}`, (err, data) => {
-        //         if(err) {
-        //             socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
-        //         }
-        //         socket.write(`HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${data.length}\r\n\r\n${data}`);
-        //     });
-        // } else if(url.includes("/files/") && data.toString().split(" ")[0] === "POST") {
-        //     let fileName = url.split('/')[2];
-        //     console.log(`filename:${fileName}`);
-        //     const filePath = FILES_DIR + fileName;
-        //     const file = fileName.toString("utf-8").split("\r\n\r\n")[1];
 
-        //     fs.writeFileSync(filePath, file);
-
-        //     socket.write("HTTP/1.1 201 CREATED\r\n\r\n"); } 
-        else {
+        } else {
             socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
         }
     });
