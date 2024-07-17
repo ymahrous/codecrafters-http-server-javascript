@@ -2,14 +2,14 @@ const fs = require("fs");
 const net = require("net");
 console.log("Logs from the program will appear here..");
 
-const args = {};
-process.argv.forEach((arg, index) => {
-  if (arg.startsWith("--")) {
-    args[arg.replace(/^--/, "")] = process.argv[index + 1];
-  }
-});
-1;
-const FILES_DIR = args["directory"];
+// const args = {};
+// process.argv.forEach((arg, index) => {
+//   if (arg.startsWith("--")) {
+//     args[arg.replace(/^--/, "")] = process.argv[index + 1];
+//   }
+// });
+// 1;
+// const FILES_DIR = args["directory"];
 
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
