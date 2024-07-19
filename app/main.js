@@ -4,7 +4,6 @@ console.log("Logs from the program will appear here..");
 
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
-        // const headers = request.split('\r\n');
         const request = data.toString().split("\r\n");
         const url = data.toString().split(' ')[1];
         const [method, path, protocol] = request[0].split(" ");
@@ -21,7 +20,7 @@ const server = net.createServer((socket) => {
 
         } else if(url.includes("/echo/")){
             const content = url.split('/echo/')[1];
-            if(headers[5] == "gzip") {
+            if(headers["Accept-Encoding"] == "gzip") {
                 socket.write(`HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n`);
             }
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
