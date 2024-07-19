@@ -21,7 +21,7 @@ const server = net.createServer((socket) => {
 
         } else if(url.includes("/echo/")){
             const content = url.split('/echo/')[1];
-            if(headers.search(header => header == "Accept-Encoding") == "gzip") {
+            if(headers[4] == "gzip") {
                 socket.write(`HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n`);
             }
             socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
