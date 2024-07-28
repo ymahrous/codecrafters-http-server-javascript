@@ -23,8 +23,9 @@ const server = net.createServer((socket) => {
             const content = url.split('/echo/')[1];
             if(headers["Accept-Encoding"] == "gzip") {
                 socket.write(`HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
+            } else {
+                socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
             }
-            socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
 
         } else if(url == '/user-agent') {
             const userAgent = request[2].split('User-Agent: ')[1];
